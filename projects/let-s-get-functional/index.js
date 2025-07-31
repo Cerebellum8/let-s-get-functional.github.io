@@ -20,27 +20,79 @@
  */
 
 var maleCount = function(array) {
-  
+   const males = _.filter(array, function(customer){
+    return customer.gender === "male";
+   });
+ return males.length;
 };
 
-var femaleCount;
 
-var oldestCustomer;
+var femaleCount = function(array) {
+  return array.reduce(function(count, customer) {
+    return customer.gender === "female" ? count + 1 : count;
+  }, 0);
+};
+ 
+var oldestCustomer = function(array) {
+  return array.reduce(function(oldest, customer) {
+    return customer.age > oldest.age ? customer : oldest;
+  }).name;
+};
 
-var youngestCustomer;
+var youngestCustomer = function(array) {
+  return array.reduce(function(youngest, customer) {
+    return customer.age < youngest.age ? customer : youngest;
+  }).name;
+};
 
-var averageBalance;
+var averageBalance = function(array) {
+  const total = array.reduce(function(sum, customer) {
+    // Remove $ and commas, then parse as float
+    const balance = parseFloat(customer.balance.replace(/[$,]/g, ""));
+    return sum + balance;
+  }, 0);
+  return total / array.length;
+};
+var firstLetterCount = function(array, letter) {
+  return array.reduce(function(count, customer) {
+    return customer.name[0].toLowerCase() === letter.toLowerCase() ? count + 1 : count;
+  }, 0);
+};
+var friendFirstLetterCount = function(array, customerName, letter) {
+  const customer = array.find(c => c.name === customerName);
+  if (!customer || !customer.friends) return 0;
 
-var firstLetterCount;
+  return customer.friends.reduce((count, friend) => {
+    return friend.name[0].toLowerCase() === letter.toLowerCase() ? count + 1 : count;
+  }, 0);
+};
+var friendsCount = function(array, name) {
+  return array.reduce((result, customer) => {
+    const hasFriend = customer.friends.some(friend => friend.name === name);
+    if (hasFriend) result.push(customer.name);
+    return result;
+  }, []);
+};
+var topThreeTags = function(array) {
+  const tagCounts = array.reduce((acc, customer) => {
+    customer.tags.forEach(tag => {
+      acc[tag] = (acc[tag] || 0) + 1;
+    });
+    return acc;
+  }, {});
 
-var friendFirstLetterCount;
-
-var friendsCount;
-
-var topThreeTags;
-
-var genderCount;
-
+  return Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1]) // Sort descending by count
+    .slice(0, 3)                  // Take top 3
+    .map(entry => entry[0]);     // Return only tag names
+};
+var genderCount = function(array) {
+  return array.reduce((acc, customer) => {
+    const gender = customer.gender;
+    acc[gender] = (acc[gender] || 0) + 1;
+    return acc;
+  }, {});
+};
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
